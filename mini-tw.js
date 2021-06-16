@@ -64,6 +64,7 @@ function doit() {
   var minimal_style = `
   div[data-testid="primaryColumn"],
   div[data-testid="primaryColumn"] > div > div,
+  div[data-testid="primaryColumn"] > div > div > div > div,
   div[data-testid="primaryColumn"] > div > div > div:nth-child(2),
   div[data-testid="primaryColumn"] > div > div > div:nth-child(3),
   div[data-testid="primaryColumn"] > div > div > div:nth-child(4),
