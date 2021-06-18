@@ -29,6 +29,19 @@ const config = {
   simpleNavButtons: true,
   noSideBar: true,
   noDMDrawer: true,
+  noPromotions: true,
+}
+
+/* reverse search for a parent that matches */
+function reverse(e, matcher) {
+  var parent = e.parentNode
+  do {
+    if (matcher(parent))
+    return parent
+    parent = parent.parentNode
+  } while (parent !== null)
+
+  return null
 }
 
 function addStyles(css) {
@@ -175,6 +188,33 @@ function doit() {
     minimal_style += `div[data-testid='DMDrawer'] {
       display: none !important;
     }`
+  }
+
+  if (config.noPromotions === true) {
+    let watchdog = new MutationObserver(mutants => {
+      for (mutant of mutants) {
+        for (span of mutant.target.querySelectorAll('article > * div[dir="auto"] > span')) {
+          if (span.textContent === "Promoted") {
+            let placement = reverse(span, (e) => {
+              if (e !== null && e.hasAttribute('data-testid') && e.getAttribute('data-testid') === 'placementTracking') {
+                return true
+              }
+              return false
+            })
+
+            if (placement !== null && placement.parentNode.parentNode.getAttribute('hidden') !== "true") {
+              placement.parentNode.parentNode.style.setProperty('display', 'none !important')
+              placement.parentNode.parentNode.setAttribute('hidden', 'true')
+            }
+          }
+        }
+      }
+    })
+
+    watchdog.observe(document.querySelector('body'),{
+      childList: true,
+      subtree: true,
+    })
   }
 
   if (config.simpleNavButtons === true) {
