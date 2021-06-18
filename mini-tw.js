@@ -211,7 +211,7 @@ function doit() {
       }
     })
 
-    watchdog.observe(document.querySelector('body'),{
+    watchdog.observe(document.querySelector('div[id="react-root"]'),{
       childList: true,
       subtree: true,
     })
