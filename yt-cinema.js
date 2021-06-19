@@ -29,19 +29,19 @@ function toggle() {
     v.style.height = `${e.clientHeight}px`
     v.style.width = `100%`
     v.style.left = `0px`
-    document.body.style.overflow = "hidden"
+    document.documentElement.style.overflow = "hidden"
   } else {
     e.style = ''
     v.style = old_video_style
     window.dispatchEvent(new Event('resize'))
-    document.body.style.overflow = ""
   }
 }
 
 (function() {
-
+  window.addEventListener('resize', () => {
+    document.documentElement.style.overflow = (cinema ? "hidden" : "")
+  }, true)
   window.addEventListener('keydown', (e) => {
     if (e.key === 'c' && e.metaKey === true && e.shiftKey === true) toggle()
-    window.dispatchEven
   })
 })()
