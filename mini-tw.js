@@ -29,7 +29,7 @@ const config = {
   simpleNavButtons: true,
   noSideBar: true,
   noDMDrawer: true,
-  noPromotions: true,
+  noPromotions: false,
 }
 
 /* reverse search for a parent that matches */
