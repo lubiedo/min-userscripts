@@ -2,7 +2,7 @@
 // @name            yt-cinema
 // @description     enables cinema mode (browser full screen) via Meta+Shift+C
 // @match           *://www.youtube.com/watch*
-// @run-at          document-end
+// @run-at          document-start
 // ==/UserScript==
 /* NOTE: put the player in theater mode before using */
 
