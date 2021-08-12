@@ -1,28 +1,26 @@
 // ==UserScript==
-// @name               Hide youtube google ad and fix ad failure
+// @name               hide youtube ads
 // @description        hide youtube google ad, auto click "skip ad" and reload if video load failed because of ad block
 // @match              *://www.youtube.com/watch*
+// @run-at             document-start
 // ==/UserScript==
 
-var fixVideo = () => {
-  // kinda fixes broken videos because of blocking https://www.youtube.com/pagead/conversion/
-  setInterval(() => {
-    const el = document.querySelector('.video-stream.html5-main-video')
-    if (el && el.getAttribute('src') === null) {
-      console.log('Reloading broken video...')
+const isWatch = () => { return window.location.href.includes('watch') }
 
-      let url = new URL(window.location.href)
-      if (url.searchParams.has('t')) {
-        url.searchParams.set('t', 0)
-        window.location.href = url.toString()
-      } else {
-        window.location.reload(false)
-      }
+const fixVideo = () => {
+  const el = document.querySelector('.video-stream.html5-main-video')
+  if (el && el.src.length === 0 && isWatch()) {
+    const url = new URL(window.location.href)
+    if (url.searchParams.has('t')) {
+      url.searchParams.set('t', 0)
+      window.location.href = url.toString()
+    } else {
+      window.location.reload(false)
     }
-  }, 500)
+  }
 }
-var closeAd = function (){
-    var css = '.video-ads .ad-container .adDisplay, #player-ads, .ytp-ad-module, .ytp-ad-image-overlay{ display: none !important; }',
+const closeAd = function (){
+    const css = '.video-ads .ad-container .adDisplay, #player-ads, .ytp-ad-module, .ytp-ad-image-overlay{ display: none !important; }',
         style = document.createElement('style');
 
     style.type = 'text/css'
@@ -34,23 +32,25 @@ var closeAd = function (){
 
     document.head.appendChild(style)
 };
-var skipAd = function(){ 
+const skipAd = function(){ 
   const observer = new MutationObserver(function(list, mutationObserver){
     for (const mutation of list) {
-      if (!mutation.target)
-        continue
-      const target = mutation.target
-      const button = target.querySelector(".ytp-ad-skip-button.ytp-button")||target.querySelector(".videoAdUiSkipButton")
-      if (button) {
+      const button = document.querySelector(".ytp-ad-skip-button.ytp-button")||document.querySelector(".videoAdUiSkipButton")
+      if (button && button.nodeName === "BUTTON" ) {
         button.click()
-        mutationObserver.disconnect()
       }
     }
+    mutationObserver.disconnect()
   })
-  observer.observe(document.querySelector('.video-ads.ytp-ad-module'),
-    {childList: true, subtree: true })
+
+  const videoEl = document.querySelector('.video-ads.ytp-ad-module')
+  if (!videoEl)
+    fixVideo()
+  observer.observe(videoEl, {childList: true, subtree: true })
 };
 
 closeAd()
 skipAd()
-fixVideo()
+setInterval(fixVideo, 1000)
+window.addEventListener('loadend', ()=>{console.log('ready')})
+

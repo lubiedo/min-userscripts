@@ -2,11 +2,11 @@
 // @name            yt-cinema
 // @description     enables cinema mode (browser full screen) via Meta+Shift+C
 // @match           *://www.youtube.com/watch*
-// @run-at          document-start
+// @run-at          document-end
 // ==/UserScript==
-/* NOTE: put the player in theater mode before using */
 
 var cinema = false;
+var previous_theater_mode = null
 var old_video_style = ''
 var style  = `
   position: fixed;
@@ -16,13 +16,24 @@ var style  = `
   z-index: 999999;
   top: 0;
 `
+
+window.watch = null
 function toggle() {
+  window.watch = document.querySelector("ytd-watch") || document.querySelector("ytd-watch-fixie") || document.querySelector("ytd-watch-flexy")
   let e = document.querySelector('div[id="player-theater-container"]')
   if (e === null)
     return
   let v = document.getElementsByTagName('video')[0]
 
   cinema = !cinema
+  if (window.watch && window.watch.player) {
+    if (cinema) {
+      previous_theater_mode = window.watch.theater
+      window.watch.theaterModeChanged_(true)
+    } else {
+      window.watch.theaterModeChanged_(previous_theater_mode)
+    }
+  }
   if (cinema) {
     e.style = style
     old_video_style = v.style
@@ -42,6 +53,7 @@ function toggle() {
     document.documentElement.style.overflow = (cinema ? "hidden" : "")
   }, true)
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'c' && e.metaKey === true && e.shiftKey === true) toggle()
+    if (e.key === 'y' && e.metaKey === true && e.shiftKey === true) toggle()
   })
 })()
+
