@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            yt-cinema
-// @description     enables cinema mode (browser full screen) via Meta+Shift+C
+// @description     enables cinema mode (browser full screen) via Meta+Shift+Y
 // @match           *://www.youtube.com/watch*
 // @run-at          document-end
 // ==/UserScript==
