@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            yt-cinema
-// @description     enables cinema mode (browser full screen) via Meta+Shift+Y
+// @description     enables cinema mode (browser full screen) via Meta+Shift+C
 // @match           *://www.youtube.com/watch*
 // @run-at          document-end
 // ==/UserScript==
@@ -55,5 +55,7 @@ function toggle() {
   window.addEventListener('keydown', (e) => {
     if (e.key === 'y' && e.metaKey === true && e.shiftKey === true) toggle()
   })
+  window.addEventListener('popstate', () => {
+    if (cinema) toggle()
+  })
 })()
-
